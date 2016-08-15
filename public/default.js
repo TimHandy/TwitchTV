@@ -12,76 +12,92 @@
 
 
 
-var model = {
-	streamerNames: ["ESL_SC2", "OgamingSC2", "cretetion", "freecodecamp", "storbeck", "habathcx", "RobotCaleb", "noobs2ninjas"],
+var streamerNames = ["ESL_SC2", "OgamingSC2", "cretetion", "freecodecamp", "storbeck", "habathcx", "RobotCaleb", "noobs2ninjas"];
 
-	requestTwitchStreamers: function() {
-		var streamObjects = [];
+// function requestTwitchStreamers() {
+// 	var streamObjects = [];
+//
+// 	streamerNames.forEach(function(streamer){
+// 		var twitchApiUrl = 'https://api.twitch.tv/kraken/streams/' + streamer + '?callback=?';
+// 		$.getJSON(twitchApiUrl, function(data) {
+// 			streamObjects.push(data);		// QUESTION: Random question: what happens if you have lots of steps that are dependent on the next... do you somehow have to nest lots of callbacks? Doesn't that get messy?
+// 	  	});
+// 	});
+// 	return streamObjects;
+// }
 
-		this.streamerNames.forEach(function(streamer){
-			var twitchApiUrl = 'https://api.twitch.tv/kraken/streams/' + streamer + '?callback=?';
-			$.getJSON(twitchApiUrl, function(data) {
-				streamObjects.push(data);		// QUESTION: Random question: what happens if you have lots of steps that are dependent on the next... do you somehow have to nest lots of callbacks? Doesn't that get messy?
-		  	});
+
+
+function requestTwitchStream() {
+	streamerNames.forEach(function(streamer) {
+		var twitchApiUrl = 'https://api.twitch.tv/kraken/streams/' + streamer + '?callback=?';
+		$.getJSON(twitchApiUrl, function(data) {
+			console.log(data);
+			if (data.stream !== null) {
+				var text = (data.stream.channel.display_name + " is live");
+				var link = '<a href="https://twitch.tv/' + streamer + '">' + text + '</a>';
+				console.log(link);
+				var li = document.createElement('li');
+				li.innerHTML = link;
+				li.className = "stream-live";
+				document.getElementById("streams-list").appendChild(li);
+				$('.stream-live').prependTo('#streams-list'); // TODO: sort by name
+
+			} else {
+				var text = (streamer + " is offline");
+				var link = '<a href="https://twitch.tv/' + streamer + '">' + text + '</a>';
+				var li = document.createElement('li');
+				li.innerHTML = link;
+				li.className = "stream-offline";
+				document.getElementById("streams-list").appendChild(li);
+			}
 		});
+	});
 
-		//console.log('in the model');
-		//console.log ('streamernames: ' + this.streamerNames) //works
-		//console.log(streamObjects);
-		return streamObjects;
-  	},
-
-};
-
-// model.requestTwitchStreamers();
+}
 
 
-var controller = {
-	getTwitchData: function() {
-		var twitchData = model.requestTwitchStreamers();  // think might need a callback here? wait for data before displayStream.
 
-		view.displayStream(twitchData);
-		//return twitchData;
-		//console.log('in the controller');
-		//console.log(twitchData);
-	},
-
-	outputListOfStreams: function(streamObjects) {
-		streamObjects.forEach(function(stream) {
-			// stick it in an Li
-			console.log(stream);
-			// append to the ul
-		});
-	}
-
-	// take each entry from streamObjects,
-
-};
-
-
-var view = {
-	createLi: function(stream) {
-		li = document.createElement('li');
-		li.textContent = stream;
-		li.className = "stream";
-		return li;
-	},
-
-	displayStream: function(twitchData) {
-		//debugger;
-		console.log(twitchData);
-
-		//console.log('in the view');
-		// display an li with the streamer name
-	}
-};
+// function createLi() {
+// 	li = document.createElement('li');
+// 	li.textContent = stream;
+// 	li.className = "stream";
+// 	return li;
+// }
+//
+// function printStreamLi(stream) {
+// 	var li = createLi(stream);
+// 	document.getElementById("streams-list").appendChild(li);
+// }
+//
 
 
 
 $(document).ready(function() {
- 	controller.getTwitchData();  // call api to pull all data for the streamerNames
- 	//console.log('in the view');
- });
+
+ 	requestTwitchStream(); // call api to pull all data for the streamerNames
+	//console.log(streamObjects);
+	
+	$('#all-button').click(function() {
+		$('li').removeClass('hidden');
+	});
+
+	$('#live-button').click(function() {
+		$('.stream-offline').addClass('hidden');
+		$('.stream-live').removeClass('hidden');
+	});
+
+	$('#offline-button').click(function() {
+		$('.stream-live').addClass('hidden');
+		$('.stream-offline').removeClass('hidden');
+	});
+
+});
+
+	// for (var i = 0; i < streamObjects.length; i++) {
+	// 	printStreamLi(streamObjects[i]);
+	// }
+
 
 
 
