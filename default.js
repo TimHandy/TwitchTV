@@ -29,7 +29,8 @@ var model = {
 		//console.log ('streamernames: ' + this.streamerNames) //works
 		//console.log(streamObjects);
 		return streamObjects;
-  	}
+  	},
+
 };
 
 // model.requestTwitchStreamers();
@@ -43,16 +44,33 @@ var controller = {
 		//return twitchData;
 		//console.log('in the controller');
 		//console.log(twitchData);
-	}
-};
+	},
 
-// controller.getTwitchData();
+	outputListOfStreams: function(streamObjects) {
+		streamObjects.forEach(function(stream) {
+			// stick it in an Li
+			console.log(stream);
+			// append to the ul
+		});
+	}
+
+	// take each entry from streamObjects,
+
+};
 
 
 var view = {
+	createLi: function(stream) {
+		li = document.createElement('li');
+		li.textContent = stream;
+		li.className = "stream";
+		return li;
+	},
+
 	displayStream: function(twitchData) {
 		//debugger;
 		console.log(twitchData);
+
 		//console.log('in the view');
 		// display an li with the streamer name
 	}
