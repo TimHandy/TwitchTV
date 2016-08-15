@@ -11,46 +11,59 @@
 // TODO: search within each of All/Online/Offline somehow
 
 
-// stream will have properties: name, image, isOnline,
-// streams: [],
 
 var model = {
 	streamerNames: ["ESL_SC2", "OgamingSC2", "cretetion", "freecodecamp", "storbeck", "habathcx", "RobotCaleb", "noobs2ninjas"],
-	requestTwitchStreamers: function(streamerNames) {
+
+	requestTwitchStreamers: function() {
 		var streamObjects = [];
+
 		this.streamerNames.forEach(function(streamer){
 			var twitchApiUrl = 'https://api.twitch.tv/kraken/streams/' + streamer + '?callback=?';
 			$.getJSON(twitchApiUrl, function(data) {
-				streamObjects.push(data);
+				streamObjects.push(data);		// QUESTION: Random question: what happens if you have lots of steps that are dependent on the next... do you somehow have to nest lots of callbacks? Doesn't that get messy?
 		  	});
 		});
+
+		//console.log('in the model');
+		//console.log ('streamernames: ' + this.streamerNames) //works
+		//console.log(streamObjects);
 		return streamObjects;
   	}
 };
 
+// model.requestTwitchStreamers();
+
 
 var controller = {
 	getTwitchData: function() {
-		var twitchData = model.requestTwitchStreamers();
+		var twitchData = model.requestTwitchStreamers();  // think might need a callback here? wait for data before displayStream.
+
 		view.displayStream(twitchData);
-		//console.log('controller: ' + twitchData);
+		//return twitchData;
+		//console.log('in the controller');
+		//console.log(twitchData);
 	}
 };
 
+// controller.getTwitchData();
+
 
 var view = {
-	displayStream: function(data) {
-		//console.log('view: ' + data);
+	displayStream: function(twitchData) {
+		//debugger;
+		console.log(twitchData);
+		//console.log('in the view');
 		// display an li with the streamer name
 	}
 };
 
 
 
-
 $(document).ready(function() {
-	controller.getTwitchData();
-});
+ 	controller.getTwitchData();  // call api to pull all data for the streamerNames
+ 	//console.log('in the view');
+ });
 
 
 
