@@ -31,33 +31,35 @@ function requestTwitchStream() {
 		var twitchApiUrl = 'https://api.twitch.tv/kraken/streams/' + streamer + '?callback=?';
 		$.getJSON(twitchApiUrl, function(data) {
 			console.log(data);
+			// if username is not valid/dead
 			if (data.status === 422) {
 				var text = (streamer + " has closed their Twitch account (or the account never existed)");
-				var li = document.createElement('li');
-				li.innerHTML = text;
-				li.className = "stream-offline";
-				document.getElementById("streams-list").appendChild(li);
+				var url = text;
+				createLi("stream-offline", url);
+			// if username is streaming
 			} else if (data.stream !== null) {
-				var currentlyStreamingWhat = data.stream.game;
-				var text = (data.stream.channel.display_name + " is streaming " + currentlyStreamingWhat);
-				var link = '<a href="https://twitch.tv/' + streamer + '">' + text + '</a>';
-				console.log(link);
-				var li = document.createElement('li');
-				li.innerHTML = link;
-				li.className = "stream-live";
-				document.getElementById("streams-list").appendChild(li);
-				$('.stream-live').prependTo('#streams-list'); // TODO: sort by name)
+				var onlineShow = data.stream.game;
+				var text = (streamer + " is streaming " + onlineShow);
+				var url = '<a href="https://twitch.tv/' + streamer + '">' + text + '</a>';
+				//console.log(url);
+				createLi("stream-live", url);
+				// sort live streams at top
+				$('.stream-live').prependTo('#streams-list'); // TODO: sort by name
+			// if username is offline
 			} else {
 				var text = (streamer + " is offline");
-				var link = '<a href="https://twitch.tv/' + streamer + '">' + text + '</a>';
-				var li = document.createElement('li');
-				li.innerHTML = link;
-				li.className = "stream-offline";
-				document.getElementById("streams-list").appendChild(li);
+				var url = '<a href="https://twitch.tv/' + streamer + '">' + text + '</a>';
+				createLi("stream-offline", url);
 			}
 		});
 	});
+}
 
+function createLi(status, url) {
+	var li = document.createElement('li');
+	li.innerHTML = url;
+	li.className = status;
+	document.getElementById("streams-list").appendChild(li);
 }
 
 
@@ -87,13 +89,14 @@ $(document).ready(function() {
 	});
 
 	$('#live-button').click(function() {
-		$('.stream-offline').addClass('hidden');
 		$('.stream-live').removeClass('hidden');
+		$('.stream-offline').addClass('hidden');
+
 	});
 
 	$('#offline-button').click(function() {
-		$('.stream-live').addClass('hidden');
 		$('.stream-offline').removeClass('hidden');
+		$('.stream-live').addClass('hidden');
 	});
 
 });
