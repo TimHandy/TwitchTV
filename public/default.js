@@ -39,7 +39,7 @@ function requestTwitchStream() {
 			// if username is streaming
 			} else if (data.stream !== null) {
 				var onlineShow = data.stream.game;
-				var text = (streamer + " is streaming " + onlineShow);
+				var text = (streamer + " is streaming " + onlineShow);  // QUESTION: text is already defined. So? should I not use var subsequent times?
 				var url = '<a href="https://twitch.tv/' + streamer + '">' + text + '</a>';
 				//console.log(url);
 				createLi("stream-live", url);
